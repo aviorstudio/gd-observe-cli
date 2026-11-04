@@ -51,7 +51,7 @@ jobs:
           platform: Darwin
           arch: x86_64
           extension: tar.gz
-        - runner: macos-15
+        - runner: macos-26
           rust-target: aarch64-apple-darwin
           platform: Darwin
           arch: arm64
@@ -97,7 +97,7 @@ jobs:
       run: cargo +1.94.0 test --locked --target "$RUST_TARGET"
     - name: Verify WSS system trust roots
       if: runner.os == 'Linux'
-      run: TLS_TEST_BINARY="target/$RUST_TARGET/debug/gdobs" python3 tests/tls_test.py
+      run: TLS_TEST_BINARY="target/$RUST_TARGET/debug/gd-observe-cli" python3 tests/tls_test.py
     - name: Build release archive
       if: inputs.release
       env:
@@ -113,6 +113,6 @@ jobs:
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
       with:
         name: native-cli-${{ matrix.platform }}-${{ matrix.arch }}
-        path: dist/gdobs_${{ matrix.platform }}_${{ matrix.arch }}.${{ matrix.extension }}
+        path: dist/gd-observe-cli_${{ matrix.platform }}_${{ matrix.arch }}.${{ matrix.extension }}
         if-no-files-found: error
         retention-days: 7

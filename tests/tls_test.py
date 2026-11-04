@@ -14,7 +14,7 @@ import tempfile
 import threading
 import unittest
 
-PRODUCT = 'gdobs'
+PRODUCT = 'gd-observe-cli'
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = Path(os.environ.get('CARGO_TARGET_DIR', ROOT/'target'))
 BINARY = Path(os.environ.get('TLS_TEST_BINARY', TARGET/'debug'/PRODUCT)).resolve()
@@ -81,7 +81,7 @@ class TLS(unittest.TestCase):
                                 data=receive(peer,length)
                                 request=json.loads(bytes(value^mask[index%4] for index,value in enumerate(data)))
                                 calls.append(request)
-                                if PRODUCT=='gdobs':
+                                if PRODUCT=='gd-observe-cli':
                                     assert request['type']=='snapshot_request'
                                     response=dict(type='snapshot',request_id=request['request_id'],enabled=True,metric_count=1)
                                 else:
@@ -96,7 +96,7 @@ class TLS(unittest.TestCase):
                     thread=threading.Thread(target=serve,daemon=True)
                     thread.start()
                     endpoint=f'wss://localhost:{listener.getsockname()[1]}'
-                    args=['snapshot','--addr',endpoint,'--timeout','2s'] if PRODUCT=='gdobs' else ['state','--cdp',endpoint]
+                    args=['snapshot','--addr',endpoint,'--timeout','2s'] if PRODUCT=='gd-observe-cli' else ['state','--cdp',endpoint]
                     env=dict(os.environ,SSL_CERT_FILE=str(cert if trusted else empty),SSL_CERT_DIR=str(root/'certs'))
                     env.pop('GDOBS_AUTH_TOKEN',None)
                     result=subprocess.run([str(BINARY),*args],env=env,capture_output=True,text=True,timeout=5)

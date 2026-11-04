@@ -39,7 +39,7 @@ async fn main() {
     let mut config = match config::Config::parse(&args) {
         Ok(value) => value,
         Err(error) => {
-            eprintln!("gdobs: {error}");
+            eprintln!("gd-observe-cli: {error}");
             if machine {
                 println!(
                     "{}",
@@ -59,7 +59,7 @@ async fn main() {
     }
     let result = tokio::select! { result=commands::run(&config)=>result, signal=tokio::signal::ctrl_c()=>match signal { Ok(()) if config.json => Err("operation cancelled".into()), other => other.map_err(Into::into) } };
     if let Err(error) = result {
-        eprintln!("gdobs: {error}");
+        eprintln!("gd-observe-cli: {error}");
         if config.json && !commands::output_emitted() {
             println!(
                 "{}",

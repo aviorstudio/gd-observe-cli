@@ -117,7 +117,7 @@ pub async fn run(config: &Config) -> Result<()> {
                 )?;
             } else {
                 println!(
-                    "gdobs {} ({}, {})",
+                    "gd-observe-cli {} ({}, {})",
                     env!("GDOBS_VERSION"),
                     env!("GDOBS_COMMIT"),
                     env!("GDOBS_DATE")
@@ -252,7 +252,7 @@ pub async fn run(config: &Config) -> Result<()> {
         }
         "capture" => {
             let root = Path::new(if config.out.is_empty() {
-                "gdobs-capture"
+                "gd-observe-cli-capture"
             } else {
                 &config.out
             });

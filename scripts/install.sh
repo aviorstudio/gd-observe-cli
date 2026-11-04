@@ -1,8 +1,8 @@
 #!/bin/sh
-# Install a published gdobs release into a user-owned directory.
+# Install a published gd-observe-cli release into a user-owned directory.
 set -eu
 
-tool=gdobs
+tool=gd-observe-cli
 repo_url=https://github.com/aviorstudio/gd-observe-cli
 release=latest
 install_dir=${INSTALL_DIR:-"$HOME/.local/bin"}

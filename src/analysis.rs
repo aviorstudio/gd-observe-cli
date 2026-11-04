@@ -248,7 +248,7 @@ pub fn trace_groups(trace: &FrameTrace) -> String {
 
 pub fn markdown(s: &Snapshot, diag: &Value) -> String {
     let mut text = format!(
-        "# gdobs Capture Summary\n\n- Metrics: {} ({} timers, {} gauges, {} counters)\n- Runtime: fps {:.1}, frame {}, process {}\n- Nodes: {}, orphans: {}, memory: {}\n\n",
+        "# gd-observe-cli Capture Summary\n\n- Metrics: {} ({} timers, {} gauges, {} counters)\n- Runtime: fps {:.1}, frame {}, process {}\n- Nodes: {}, orphans: {}, memory: {}\n\n",
         s.metric_count,
         s.timer_count,
         s.gauge_count,

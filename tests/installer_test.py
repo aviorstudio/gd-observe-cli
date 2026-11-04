@@ -20,17 +20,17 @@ class Installer(unittest.TestCase):
                 binary, fixture, commands = (root/name for name in ('bin', 'fixture', 'commands'))
                 for path in (binary, fixture, commands):
                     path.mkdir()
-                (binary/'gdobs').write_bytes(old)
+                (binary/'gd-observe-cli').write_bytes(old)
                 with tarfile.open(fixture/'archive', 'w:gz') as archive:
                     for _ in range(2 if scenario == 'duplicate' else 1):
-                        entry = tarfile.TarInfo('another-file' if scenario == 'missing' else 'gdobs')
+                        entry = tarfile.TarInfo('another-file' if scenario == 'missing' else 'gd-observe-cli')
                         entry.mode = 0o755
                         entry.size = len(payload)
                         if scenario == 'symlink':
                             entry.type, entry.linkname, entry.size = tarfile.SYMTYPE, '/outside', 0
                         archive.addfile(entry, io.BytesIO(payload) if entry.size else None)
                 digest = hashlib.sha256((fixture/'archive').read_bytes()).hexdigest()
-                (fixture/'checksums').write_text(('0'*64 if scenario == 'checksum' else digest)+'  ./gdobs_Linux_x86_64.tar.gz\n')
+                (fixture/'checksums').write_text(('0'*64 if scenario == 'checksum' else digest)+'  ./gd-observe-cli_Linux_x86_64.tar.gz\n')
                 scripts = {
                     'uname': '#!/bin/sh\ncase "$1" in -s) echo Linux;; -m) echo x86_64;; *) exit 1;; esac\n',
                     'curl': '''#!/bin/sh
@@ -48,7 +48,7 @@ done
 case "$url" in
  https://api.github.com/repos/aviorstudio/gd-observe-cli/releases?per_page=100) printf '[{"tag_name":"gd-v9.9.9"},{"tag_name":"cli-v1.2.3"}]';;
  https://github.com/aviorstudio/gd-observe-cli/releases/download/cli-v1.2.3/checksums.txt) cp "$INSTALL_FIXTURE/checksums" "$output";;
- https://github.com/aviorstudio/gd-observe-cli/releases/download/cli-v1.2.3/gdobs_Linux_x86_64.tar.gz) cp "$INSTALL_FIXTURE/archive" "$output";;
+ https://github.com/aviorstudio/gd-observe-cli/releases/download/cli-v1.2.3/gd-observe-cli_Linux_x86_64.tar.gz) cp "$INSTALL_FIXTURE/archive" "$output";;
  *) echo "unexpected download: $url" >&2; exit 1;;
 esac
 ''',
@@ -60,7 +60,7 @@ esac
                                         env=dict(os.environ, PATH=str(commands)+os.pathsep+os.environ['PATH'], INSTALL_FIXTURE=str(fixture)),
                                         capture_output=True, timeout=10)
                 self.assertEqual(result.returncode == 0, scenario == 'valid', result.stderr)
-                self.assertEqual((binary/'gdobs').read_bytes(), payload if scenario == 'valid' else old)
+                self.assertEqual((binary/'gd-observe-cli').read_bytes(), payload if scenario == 'valid' else old)
 
 
 if __name__ == '__main__':

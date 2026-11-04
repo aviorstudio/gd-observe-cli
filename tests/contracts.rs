@@ -15,7 +15,7 @@ impl Temp {
     fn new() -> Self {
         static NEXT: AtomicUsize = AtomicUsize::new(0);
         let path = std::env::temp_dir().join(format!(
-            "gdobs-test-{}-{}",
+            "gd-observe-cli-test-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)
         ));
@@ -30,7 +30,7 @@ impl Drop for Temp {
 }
 
 fn cli(args: &[&str]) -> Command {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_gdobs"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_gd-observe-cli"));
     command.args(args).env_remove("GDOBS_AUTH_TOKEN");
     command
 }
@@ -111,7 +111,7 @@ async fn endpoint_files_do_not_supply_auth_and_wait_filters_events() {
     let addr = format!("ws://{}", listener.local_addr().unwrap());
     fs::write(
         root.0.join(".env.json"),
-        json!({"gdobs_url":addr,"GDOBS_AUTH_TOKEN":"must-not-load"}).to_string(),
+        json!({"gd-observe-cli_url":addr,"GDOBS_AUTH_TOKEN":"must-not-load"}).to_string(),
     )
     .unwrap();
     let server = tokio::spawn(async move {
