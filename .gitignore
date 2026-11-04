@@ -1,0 +1,6 @@
+.artifacts/
+.ci-tools/
+dist/
+target/
+__pycache__/
+.DS_Store

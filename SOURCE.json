@@ -1,0 +1,183 @@
+{
+  "repository": "aviorstudio/gd-observe",
+  "revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+  "license": "MIT",
+  "files": [
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/Cargo.lock",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "Cargo.lock",
+      "sha256": "f57bfe4a30bd8d833b2d83010dffa59dd5d7acf7335222dcfdc8c9bca76921c6"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/Cargo.toml",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "Cargo.toml",
+      "sha256": "5b8ee4aa874db8c1ae994abd92d76c27eae008b7007f9271d52e67128777a6b1"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/build.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "build.rs",
+      "sha256": "e70b403fa4797bcd3cf520c09500ae13fba3ac493af2531ae12844d28ec81742"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/src/analysis.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "src/analysis.rs",
+      "sha256": "fd91401a3399086e69c964b31c3b48c6fe08a7169cf8c0b583bee5dee2f89641"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/src/commands.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "src/commands.rs",
+      "sha256": "027127d3d0efdbcd0e833e495aa20178bc4b708f08220021eb28eb5b98d1f2bf"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/src/config.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "src/config.rs",
+      "sha256": "e7c3862ff676cfa57c7552b16be88de53a74868c815eae5df99586e61240411c"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/src/main.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "src/main.rs",
+      "sha256": "39f69ac7e8561ebc0e41ee9f98100e9e19519be7a58acdf37f3fe0f45bf4cee5"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/src/model.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "src/model.rs",
+      "sha256": "f96ca30f8bb12da88449b58c2a216afabca1423528fe5c353c1eea228352799d"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/src/transport.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "src/transport.rs",
+      "sha256": "95b19596aaff233259f51d7a4245f59b86f839285deaf349411dda1cb989613f"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/src/ui.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "src/ui.rs",
+      "sha256": "f9645ada3115fb3f89953d37dcaff0e438b0eed1c333b3564c3514dc54a29e48"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/tests/contracts.rs",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "tests/contracts.rs",
+      "sha256": "bb8564d5a17235761ad84ad3e08b4d38e65fba69e82a1d699ddfc378d83d644a"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "cli/install.sh",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "scripts/install.sh",
+      "sha256": "60a69acd99a0532c81ea1a97c61cc7471ef5cc26b8b52044a0a6316a09805559"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "LICENSE",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "LICENSE",
+      "sha256": "a03ff68fb0090d2593c6e26cd631a9ba4c248a036dcd439cdc928e51ba2a84ff"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "scripts/native_linkage.py",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "scripts/native_linkage.py",
+      "sha256": "aeb8cbb4796c4c386399f3d0822f2b6fdd1f975ffe981b90e816984390048be5"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "scripts/package-cli.py",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "scripts/package-cli.py",
+      "sha256": "5edc404801a8710b2e84840677e65fc6c98c959602ebe3f1c416fe704fc269a6"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "tests/installer_test.py",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "tests/installer_test.py",
+      "sha256": "c7b27755d30a90bb4966a08033fed6b91e6cd3e2783350ddbbbc65c0af9fdad0"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "tests/tls_test.py",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "tests/tls_test.py",
+      "sha256": "ee8ce54c447562a08c18f8a9bdb05b603541707afd0969fb80bfb9927d5172c3"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": ".github/scripts/check-documentation.py",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": ".github/scripts/check-documentation.py",
+      "sha256": "52bb27c332a3d9df28f6a86c824875b4696871aea48bb72c4803c33eb14a254c"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": ".github/workflows/documentation-policy.yml",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": ".github/workflows/documentation-policy.yml",
+      "sha256": "7420c93d2c440bc18b9cb59f0894aba7f68066122a5a24f459f5e897303199c0"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": ".github/dependency-policy.json",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": ".github/dependency-policy.json",
+      "sha256": "3f39db89f7642567f927672fbed80cece06d89d32d3ed270d789b044e206d2fe"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": ".github/workflows/dependency-policy.yml",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": ".github/workflows/dependency-policy.yml",
+      "sha256": "6f5052d9db40bdece7e0a89483591664eb89cc95672f687ceea58e12d0f63f05"
+    },
+    {
+      "source_repository": "aviorstudio/gd-observe",
+      "source_revision": "a854f6fc777d1600867705c40bd183c9aec393c6",
+      "source_path": "tests/release_guard_test.py",
+      "destination_repository": "aviorstudio/gd-observe-cli",
+      "destination_path": "tests/release_guard_test.py",
+      "sha256": "5c2eb5e55492f578e383517f83df75d609bc865bdf5ee09aa3207a7af30455d9"
+    }
+  ]
+}
