@@ -11,6 +11,20 @@ name: Native CLI
       date:
         type: string
         default: unknown
+  workflow_dispatch:
+    inputs:
+      release:
+        type: boolean
+        default: false
+        description: Build release archives without publishing
+      version:
+        type: string
+        default: dev
+        description: Version embedded in the executable
+      date:
+        type: string
+        default: unknown
+        description: Build date embedded in the executable
 permissions:
   contents: read
 jobs:
