@@ -91,7 +91,10 @@ async fn auth_precedes_request_and_broadcasts_cannot_satisfy_filtered_snapshot()
         .env("GDOBS_AUTH_TOKEN", "process-only-secret"),
     )
     .await;
-    server.await.unwrap();
+    timeout(Duration::from_secs(2), server)
+        .await
+        .expect("fixture server did not complete")
+        .unwrap();
     assert!(
         result.status.success(),
         "{}",
@@ -111,7 +114,7 @@ async fn endpoint_files_do_not_supply_auth_and_wait_filters_events() {
     let addr = format!("ws://{}", listener.local_addr().unwrap());
     fs::write(
         root.0.join(".env.json"),
-        json!({"gd-observe-cli_url":addr,"GDOBS_AUTH_TOKEN":"must-not-load"}).to_string(),
+        json!({"gdobs_url":addr,"GDOBS_AUTH_TOKEN":"must-not-load"}).to_string(),
     )
     .unwrap();
     let server = tokio::spawn(async move {
@@ -146,7 +149,10 @@ async fn endpoint_files_do_not_supply_auth_and_wait_filters_events() {
         "1s",
     ]))
     .await;
-    server.await.unwrap();
+    timeout(Duration::from_secs(2), server)
+        .await
+        .expect("fixture server did not complete")
+        .unwrap();
     assert!(result.status.success());
     let value: Value = serde_json::from_slice(&result.stdout).unwrap();
     assert_eq!(value["matched"]["fields"]["id"], "abc");
@@ -254,7 +260,10 @@ async fn capture_produces_all_summary_artifacts() {
         "1s",
     ]))
     .await;
-    server.await.unwrap();
+    timeout(Duration::from_secs(2), server)
+        .await
+        .expect("fixture server did not complete")
+        .unwrap();
     assert!(result.status.success());
     for file in [
         "snapshot.json",

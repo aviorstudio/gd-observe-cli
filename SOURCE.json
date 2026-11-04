@@ -100,7 +100,7 @@
       "destination_repository": "aviorstudio/gd-observe-cli",
       "destination_path": "tests/contracts.rs",
       "sha256": "bb8564d5a17235761ad84ad3e08b4d38e65fba69e82a1d699ddfc378d83d644a",
-      "destination_sha256": "f1c87d8887d91aed396e6303ac95d60c042d573663cdc953bc9416c636d10c06"
+      "destination_sha256": "2314757489ac2fe2f3286f165b819c1064eea25c8c15b3d4fdc08291aa141d1a"
     },
     {
       "source_repository": "aviorstudio/gd-observe",
