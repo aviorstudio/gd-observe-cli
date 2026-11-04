@@ -19,7 +19,7 @@ depends = ["install"]
 run = "python3 \"$TOOLS_ROOT/helpers/verification.py\" test --name unit --artifact .artifacts/bin -- mise run _unit"
 depends = ["install"]
 [tasks.artifact-check]
-run = "python3 -c 'from pathlib import Path; import os; p=Path(\".artifacts/bin/gdobs\"); assert p.is_file() and p.stat().st_size and os.access(p,os.X_OK)'"
+run = "python3 -c 'from pathlib import Path; import os; p=Path(\".artifacts/bin/gd-observe-cli\"); assert p.is_file() and p.stat().st_size and os.access(p,os.X_OK)'"
 depends = ["build"]
 [tasks.clean]
 run = "python3 \"$TOOLS_ROOT/helpers/clean.py\" --path target --path dist --path .artifacts/bin"

@@ -267,7 +267,7 @@ impl Dashboard {
             Paragraph::new(vec![
                 Line::from(vec![
                     Span::styled(
-                        "gdobs  ",
+                        "gd-observe-cli  ",
                         Style::default()
                             .fg(Color::Cyan)
                             .add_modifier(Modifier::BOLD),

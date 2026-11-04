@@ -15,7 +15,7 @@ impl Temp {
     fn new() -> Self {
         static NEXT: AtomicUsize = AtomicUsize::new(0);
         let path = std::env::temp_dir().join(format!(
-            "gdobs-test-{}-{}",
+            "gd-observe-cli-test-{}-{}",
             std::process::id(),
             NEXT.fetch_add(1, Ordering::Relaxed)
         ));
@@ -30,7 +30,7 @@ impl Drop for Temp {
 }
 
 fn cli(args: &[&str]) -> Command {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_gdobs"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_gd-observe-cli"));
     command.args(args).env_remove("GDOBS_AUTH_TOKEN");
     command
 }
@@ -91,7 +91,10 @@ async fn auth_precedes_request_and_broadcasts_cannot_satisfy_filtered_snapshot()
         .env("GDOBS_AUTH_TOKEN", "process-only-secret"),
     )
     .await;
-    server.await.unwrap();
+    timeout(Duration::from_secs(2), server)
+        .await
+        .expect("fixture server did not complete")
+        .unwrap();
     assert!(
         result.status.success(),
         "{}",
@@ -146,7 +149,10 @@ async fn endpoint_files_do_not_supply_auth_and_wait_filters_events() {
         "1s",
     ]))
     .await;
-    server.await.unwrap();
+    timeout(Duration::from_secs(2), server)
+        .await
+        .expect("fixture server did not complete")
+        .unwrap();
     assert!(result.status.success());
     let value: Value = serde_json::from_slice(&result.stdout).unwrap();
     assert_eq!(value["matched"]["fields"]["id"], "abc");
@@ -254,7 +260,10 @@ async fn capture_produces_all_summary_artifacts() {
         "1s",
     ]))
     .await;
-    server.await.unwrap();
+    timeout(Duration::from_secs(2), server)
+        .await
+        .expect("fixture server did not complete")
+        .unwrap();
     assert!(result.status.success());
     for file in [
         "snapshot.json",

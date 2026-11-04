@@ -11,7 +11,7 @@ lint)
 build)
   cargo build --locked
   mkdir -p .artifacts/bin
-  cp "${CARGO_TARGET_DIR:-target}/debug/gdobs" .artifacts/bin/gdobs
+  cp "${CARGO_TARGET_DIR:-target}/debug/gd-observe-cli" .artifacts/bin/gd-observe-cli
   ;;
 test)
   cargo test --locked

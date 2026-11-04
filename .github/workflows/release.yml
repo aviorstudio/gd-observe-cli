@@ -114,7 +114,7 @@ jobs:
           extension=tar.gz
           [ "$platform" != Windows ] || extension=zip
           for arch in x86_64 arm64; do
-            test -s "gdobs_${platform}_${arch}.${extension}"
+            test -s "gd-observe-cli_${platform}_${arch}.${extension}"
           done
         done
         test "$(find . -maxdepth 1 -type f | wc -l)" -eq 6
@@ -143,6 +143,6 @@ jobs:
       contents: write
     with:
       tools-ref: f412061a7a3f0914db9e09d1159e69504aee8706
-      binary: gdobs
+      binary: gd-observe-cli
       tag: ${{ needs.release.outputs.tag }}
       artifact-id: ${{ needs.accept-cli.outputs.artifact-id }}
