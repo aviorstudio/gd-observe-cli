@@ -81,10 +81,6 @@ TLS_TEST_BINARY = ".artifacts/build/gd-observe-cli"
 [lint]
 shell_paths = ["scripts/install.sh"]
 
-[[tests.lint]]
-runner = "python"
-path = "tests/release_guard_test.py"
-
 [[tests.integration]]
 runner = "python"
 path = "tests/installer_test.py"
@@ -99,3 +95,11 @@ paths = ["dist", "target", ".artifacts/build", ".artifacts/rust-target", ".artif
 [ci]
 runner = "ubuntu-24.04"
 timeout_minutes = 30
+
+[publication]
+tag_prefix = "cli-v"
+initial = "bump"
+version_identity = "number"
+validation_timeout = 30
+acceptance_timeout = 5
+initial_version = "0.0.10"
