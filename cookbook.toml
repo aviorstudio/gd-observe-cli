@@ -9,9 +9,6 @@ profile = "release"
 
 [package]
 binary = "gd-observe-cli"
-component = "cli"
-output = ".artifacts/build/gd-observe-cli"
-profile = "release"
 files = ["README.md", "LICENSE"]
 version_arguments = ["version"]
 version_template = "{binary} {version} ({commit}, {date})"
@@ -69,12 +66,6 @@ platform = "Windows"
 arch = "arm64"
 extension = "zip"
 checks = []
-
-[artifacts]
-paths = ["dist", ".artifacts/build", ".artifacts/native-package"]
-
-[artifacts.binary_environment]
-TLS_TEST_BINARY = ".artifacts/build/gd-observe-cli"
 
 [lint]
 shell_paths = ["scripts/install.sh"]

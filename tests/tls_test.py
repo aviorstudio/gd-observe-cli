@@ -17,7 +17,7 @@ import unittest
 PRODUCT = 'gd-observe-cli'
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = Path(os.environ.get('CARGO_TARGET_DIR', ROOT/'target'))
-BINARY = Path(os.environ.get('TLS_TEST_BINARY', TARGET/'debug'/PRODUCT)).resolve()
+BINARY = Path(os.environ.get('COOKBOOK_CLI_BINARY', TARGET/'debug'/PRODUCT)).resolve()
 
 
 def receive(stream, count):
