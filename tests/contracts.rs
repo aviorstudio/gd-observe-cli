@@ -113,8 +113,8 @@ async fn endpoint_files_do_not_supply_auth_and_wait_filters_events() {
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let addr = format!("ws://{}", listener.local_addr().unwrap());
     fs::write(
-        root.0.join(".env.json"),
-        json!({"gdobs_url":addr,"GDOBS_AUTH_TOKEN":"must-not-load"}).to_string(),
+        root.0.join(".env.toml"),
+        toml::to_string(&json!({"gdobs_url":addr,"GDOBS_AUTH_TOKEN":"must-not-load"})).unwrap(),
     )
     .unwrap();
     let server = tokio::spawn(async move {
@@ -192,12 +192,13 @@ async fn offline_top_diff_and_budget_keep_the_public_json_contract() {
     let root = Temp::new();
     let before = root.0.join("before.json");
     let after = root.0.join("after.json");
-    let budget = root.0.join("budget.json");
+    let budget = root.0.join("budget.toml");
     fs::write(&before,json!({"metrics":[{"path":"combat.a","key":"a","kind":"timer","p95":100},{"path":"combat.b","key":"b","kind":"timer","p95":500}]}).to_string()).unwrap();
     fs::write(&after,json!({"metrics":[{"path":"combat.a","key":"a","kind":"timer","p95":900},{"path":"combat.c","key":"c","kind":"gauge","latest":5}],"runtime":{"fps":30}}).to_string()).unwrap();
     fs::write(
         &budget,
-        json!({"timers":{"combat.a":{"p95_usec":500}},"runtime":{"min_fps":60}}).to_string(),
+        toml::to_string(&json!({"timers":{"combat.a":{"p95_usec":500}},"runtime":{"min_fps":60}}))
+            .unwrap(),
     )
     .unwrap();
     let result = output(&mut cli(&[
@@ -307,4 +308,17 @@ async fn machine_commands_emit_once_and_never_enter_the_dashboard() {
     let value: Value = serde_json::from_slice(&checked.stdout).unwrap();
     assert_eq!(value["ok"], false);
     assert_eq!(value["failures"].as_array().unwrap().len(), 1);
+}
+
+#[tokio::test]
+async fn legacy_endpoint_source_is_never_an_authored_fallback() {
+    let root = Temp::new();
+    fs::write(
+        root.0.join(".env.json"),
+        r#"{"gdobs_url":"ws://127.0.0.1:9"}"#,
+    )
+    .unwrap();
+    let result = output(&mut cli(&["status", "--project", root.0.to_str().unwrap()])).await;
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("explicit conversion"));
 }

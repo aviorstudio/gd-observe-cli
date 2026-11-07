@@ -1,4 +1,4 @@
-<!-- Generated from private documentation source. Do not edit directly. Source SHA256: 307c692884d68b5a1dd7cac680fe2aa6388b63de034e90636938f11ed8c2d3b4 -->
+<!-- Generated from private documentation source. Do not edit directly. Source SHA256: 2cdfb08515affe964feb8d0cea750e3e0ba4591afb2e6aa7e68df76a36724360 -->
 
 # gd-observe-cli
 
@@ -19,14 +19,18 @@ The installer selects this repository's published `cli-v` releases, verifies arc
 ```sh
 gd-observe-cli watch --addr ws://127.0.0.1:8765
 gd-observe-cli --json snapshot --url ws://127.0.0.1:8765
-gd-observe-cli assert --budget metrics-budget.json
+gd-observe-cli assert --budget metrics-budget.toml
 gd-observe-cli capture --duration 30s --out .artifacts/capture
 gd-observe-cli diff before.json after.json
 ```
 
 `gd-observe-cli` connects to a running game's gd-observe WebSocket server. It provides a Ratatui live dashboard, metrics snapshots, performance assertions, diagnostic captures and offline comparisons. The Godot addon is installed separately.
 
+Current-source endpoint files use `.env.toml` and `.env.example.toml` (dotenv `.env` remains supported). `--project` discovers these files at the project root or under `godot_client/`; legacy endpoint JSON requires explicit conversion. `--budget` reads TOML, while snapshots, captures, diffs and WebSocket messages retain JSON. Installed releases retain their released interface.
+
 Endpoint selection supports `--url`, `--addr`, `--env` and `--project`; the default is `ws://127.0.0.1:8765`. A configured remote server can use the process-only `GDOBS_AUTH_TOKEN` environment variable. WSS uses system trust roots. Use `gd-observe-cli --help` for command flags.
+
+Current-source migration is manual: create the named TOML source with the same effective settings and archive the legacy JSON v1 source outside the active configuration directory. No automatic import command is provided. Preserve explicit `false`, zero and empty arrays; omit null overrides only where they meant inheritance or defaults. Do not copy credentials into tracked source files. Existing installed settings are not migrated by a source update.
 
 ## Development
 
