@@ -38,6 +38,17 @@ pub fn load<T: serde::de::DeserializeOwned>(path: &str) -> Result<T> {
     Ok(stream.next().ok_or("empty JSON input")??)
 }
 
+fn load_budget(path: &str) -> Result<Value> {
+    let mut bytes = Vec::new();
+    File::open(path)?
+        .take(transport::MAX_MESSAGE as u64 + 1)
+        .read_to_end(&mut bytes)?;
+    if bytes.len() > transport::MAX_MESSAGE {
+        return Err("budget exceeds 32 MiB".into());
+    }
+    Ok(crate::source_toml::parse(std::str::from_utf8(&bytes)?)?)
+}
+
 fn write_json(root: &Path, name: &str, value: &impl Serialize) -> Result<()> {
     let mut file = BufWriter::new(File::create(root.join(name))?);
     serde_json::to_writer_pretty(&mut file, value)?;
@@ -203,7 +214,7 @@ pub async fn run(config: &Config) -> Result<()> {
                 transport::snapshot(&config.addr, config.timeout, None).await?
             };
             let failures = if !config.budget.is_empty() {
-                analysis::budget(&snapshot, &load(&config.budget)?)
+                analysis::budget(&snapshot, &load_budget(&config.budget)?)
             } else {
                 let mut failures = Vec::new();
                 if config.min_fps >= 0. && snapshot.runtime.fps < config.min_fps {

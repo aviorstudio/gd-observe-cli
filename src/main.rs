@@ -2,6 +2,7 @@ mod analysis;
 mod commands;
 mod config;
 mod model;
+pub mod source_toml;
 mod transport;
 mod ui;
 
