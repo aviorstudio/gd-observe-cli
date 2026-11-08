@@ -142,7 +142,7 @@ async fn process_endpoint_does_not_load_file_auth_and_wait_filters_events() {
         }
     });
     let result = output(
-        &mut cli(&[
+        cli(&[
             "wait",
             "--for",
             "event",
