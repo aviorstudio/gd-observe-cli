@@ -31,7 +31,10 @@ impl Drop for Temp {
 
 fn cli(args: &[&str]) -> Command {
     let mut command = Command::new(env!("CARGO_BIN_EXE_gd-observe-cli"));
-    command.args(args).env_remove("GDOBS_AUTH_TOKEN");
+    command
+        .args(args)
+        .env_remove("GDOBS_AUTH_TOKEN")
+        .env_remove("GDOBS_URL");
     command
 }
 async fn output(command: &mut Command) -> Output {
@@ -88,7 +91,8 @@ async fn auth_precedes_request_and_broadcasts_cannot_satisfy_filtered_snapshot()
             "--timeout",
             "1s",
         ])
-        .env("GDOBS_AUTH_TOKEN", "process-only-secret"),
+        .env("GDOBS_AUTH_TOKEN", "process-only-secret")
+        .env("GDOBS_URL", "ws://127.0.0.1:1"),
     )
     .await;
     timeout(Duration::from_secs(2), server)
@@ -108,7 +112,7 @@ async fn auth_precedes_request_and_broadcasts_cannot_satisfy_filtered_snapshot()
 }
 
 #[tokio::test]
-async fn endpoint_files_do_not_supply_auth_and_wait_filters_events() {
+async fn process_endpoint_does_not_load_file_auth_and_wait_filters_events() {
     let root = Temp::new();
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let addr = format!("ws://{}", listener.local_addr().unwrap());
@@ -137,17 +141,19 @@ async fn endpoint_files_do_not_supply_auth_and_wait_filters_events() {
                 .unwrap();
         }
     });
-    let result = output(&mut cli(&[
-        "wait",
-        "--project",
-        root.0.to_str().unwrap(),
-        "--for",
-        "event",
-        "--name",
-        "ready",
-        "--timeout",
-        "1s",
-    ]))
+    let result = output(
+        cli(&[
+            "wait",
+            "--for",
+            "event",
+            "--name",
+            "ready",
+            "--timeout",
+            "1s",
+        ])
+        .current_dir(&root.0)
+        .env("GDOBS_URL", &addr),
+    )
     .await;
     timeout(Duration::from_secs(2), server)
         .await
@@ -311,14 +317,10 @@ async fn machine_commands_emit_once_and_never_enter_the_dashboard() {
 }
 
 #[tokio::test]
-async fn legacy_endpoint_source_is_never_an_authored_fallback() {
-    let root = Temp::new();
-    fs::write(
-        root.0.join(".env.json"),
-        r#"{"gdobs_url":"ws://127.0.0.1:9"}"#,
-    )
-    .unwrap();
-    let result = output(&mut cli(&["status", "--project", root.0.to_str().unwrap()])).await;
-    assert!(!result.status.success());
-    assert!(String::from_utf8_lossy(&result.stderr).contains("explicit conversion"));
+async fn retired_endpoint_file_options_are_rejected() {
+    for option in ["--env", "--project"] {
+        let result = output(&mut cli(&["status", option, "unused"])).await;
+        assert!(!result.status.success());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("unknown option"));
+    }
 }

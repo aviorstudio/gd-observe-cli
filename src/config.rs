@@ -1,6 +1,6 @@
 use crate::Result;
 use serde_json::{Value, json};
-use std::{collections::BTreeMap, fs, path::Path, time::Duration};
+use std::time::Duration;
 
 pub const DEFAULT_ADDR: &str = "ws://127.0.0.1:8765";
 pub const COMMANDS: &[&str] = &[
@@ -65,18 +65,21 @@ impl Default for Config {
     }
 }
 
-pub const HELP: &str = "gd-observe-cli: Godot observability CLI and Ratatui dashboard\n\nUsage: gd-observe-cli [watch|snapshot|capture|stream|status|wait|assert|diagnose|top|diff|version] [options]\n\n  --addr, --url URL       WebSocket endpoint (default ws://127.0.0.1:8765)\n  --env FILE             Endpoint settings from .env.toml or dotenv .env\n  --project DIRECTORY    Discover endpoint settings in a Godot project\n  --timeout DURATION     Machine command timeout (default 10s)\n  --kind KIND            timer, gauge or counter\n  --path PATH            Exact metric path\n  --path-prefix PREFIX   Metric path prefix\n  --sort FIELD           p95, total, max, avg, p50, p99, latest or value\n  --limit COUNT          Maximum returned metrics\n  --raw, --traces        Include raw samples / recent traces\n  --file FILE            Read an offline snapshot (- reads stdin)\n  --budget FILE          Assert a TOML budget\n  --metric PATH          Metric path or key for assertions\n  --max-p95-usec NUMBER  --min-fps NUMBER  --max-frame-usec NUMBER\n  --for TYPE             Wait for snapshot, event, log or trace\n  --name NAME            Event name to wait for\n  --level LEVEL          Log level to wait for\n  --duration DURATION    Optional capture duration\n  --out DIRECTORY       Capture destination (default gd-observe-cli-capture)\n\nAuthentication: GDOBS_AUTH_TOKEN in the process environment only.\nMachine results: --json selects finite commands; snapshot/status/analysis already emit JSON. watch and stream retain their terminal/stream protocols.\nDashboard: click tabs and rows; mouse wheel scrolls; Ctrl+C exits.\n";
+pub const HELP: &str = "gd-observe-cli: Godot observability CLI and Ratatui dashboard\n\nUsage: gd-observe-cli [watch|snapshot|capture|stream|status|wait|assert|diagnose|top|diff|version] [options]\n\n  --addr, --url URL       WebSocket endpoint (default ws://127.0.0.1:8765)\n  --timeout DURATION     Machine command timeout (default 10s)\n  --kind KIND            timer, gauge or counter\n  --path PATH            Exact metric path\n  --path-prefix PREFIX   Metric path prefix\n  --sort FIELD           p95, total, max, avg, p50, p99, latest or value\n  --limit COUNT          Maximum returned metrics\n  --raw, --traces        Include raw samples / recent traces\n  --file FILE            Read an offline snapshot (- reads stdin)\n  --budget FILE          Assert a TOML budget\n  --metric PATH          Metric path or key for assertions\n  --max-p95-usec NUMBER  --min-fps NUMBER  --max-frame-usec NUMBER\n  --for TYPE             Wait for snapshot, event, log or trace\n  --name NAME            Event name to wait for\n  --level LEVEL          Log level to wait for\n  --duration DURATION    Optional capture duration\n  --out DIRECTORY       Capture destination (default gd-observe-cli-capture)\n\nEndpoint: --addr/--url overrides GDOBS_URL in the process environment.\nAuthentication: GDOBS_AUTH_TOKEN in the process environment only.\nMachine results: --json selects finite commands; snapshot/status/analysis already emit JSON. watch and stream retain their terminal/stream protocols.\nDashboard: click tabs and rows; mouse wheel scrolls; Ctrl+C exits.\n";
 
 impl Config {
     pub fn parse(args: &[String]) -> Result<Self> {
-        let mut cfg = Self::default();
+        let mut cfg = Self {
+            addr: std::env::var("GDOBS_URL")
+                .ok()
+                .filter(|value| !value.is_empty())
+                .unwrap_or_else(|| DEFAULT_ADDR.into()),
+            ..Self::default()
+        };
         let mut args = args.iter().peekable();
         if args.peek().is_some_and(|v| COMMANDS.contains(&v.as_str())) {
             cfg.command = args.next().unwrap().clone();
         }
-        let mut endpoint = false;
-        let mut env_file = String::new();
-        let mut project = String::new();
         while let Some(arg) = args.next() {
             if arg == "--" {
                 cfg.positional.extend(args.cloned());
@@ -111,10 +114,7 @@ impl Config {
             match key {
                 "addr" | "url" => {
                     cfg.addr = value;
-                    endpoint = true;
                 }
-                "env" => env_file = value,
-                "project" => project = value,
                 "timeout" => cfg.timeout = duration(&value)?,
                 "duration" => cfg.duration = duration(&value)?,
                 "for" => cfg.wait_for = value,
@@ -133,13 +133,6 @@ impl Config {
                 "file" => cfg.file = value,
                 "budget" => cfg.budget = value,
                 _ => return Err(format!("unknown option --{key}").into()),
-            }
-        }
-        if !endpoint {
-            if !env_file.is_empty() {
-                cfg.addr = address_from_file(Path::new(&env_file))?;
-            } else if !project.is_empty() {
-                cfg.addr = address_from_project(Path::new(&project))?;
             }
         }
         if ![cfg.max_p95, cfg.min_fps, cfg.max_frame]
@@ -207,94 +200,6 @@ pub fn duration(value: &str) -> Result<Duration> {
     Ok(Duration::try_from_secs_f64(seconds)?)
 }
 
-pub fn address_from_project(path: &Path) -> Result<String> {
-    for directory in [path.to_owned(), path.join("godot_client")] {
-        for stem in [".env", ".env.example"] {
-            let canonical = directory.join(format!("{stem}.toml"));
-            if canonical.try_exists()? {
-                return address_from_file(&canonical);
-            }
-            if directory
-                .join(format!("{stem}.json"))
-                .symlink_metadata()
-                .is_ok()
-            {
-                return Err("legacy endpoint JSON requires explicit conversion to .env.toml; legacy JSON v1 must be converted manually; no automatic import".into());
-            }
-            let dotenv = directory.join(stem);
-            if dotenv.try_exists()? {
-                return address_from_file(&dotenv);
-            }
-        }
-    }
-    Err(format!("no supported env file found under {}", path.display()).into())
-}
-
-pub fn address_from_file(path: &Path) -> Result<String> {
-    let raw = fs::read_to_string(path)?;
-    let values: BTreeMap<String, Value> = if path.extension().is_some_and(|s| s == "json") {
-        return Err("legacy endpoint JSON requires explicit conversion to .env.toml; legacy JSON v1 must be converted manually; no automatic import".into());
-    } else if path.extension().is_some_and(|s| s == "toml") {
-        serde_json::from_value(crate::source_toml::parse(&raw)?)?
-    } else {
-        raw.lines()
-            .filter_map(|line| {
-                let line = line.trim();
-                if line.starts_with('#') {
-                    return None;
-                }
-                let (key, value) = line.split_once('=')?;
-                Some((
-                    key.trim().into(),
-                    json!(value.trim().trim_matches(['\'', '"'])),
-                ))
-            })
-            .collect()
-    };
-    let string = |keys: &[&str]| {
-        keys.iter()
-            .find_map(|key| {
-                values
-                    .get(*key)
-                    .and_then(Value::as_str)
-                    .map(str::trim)
-                    .filter(|s| !s.is_empty())
-            })
-            .unwrap_or("")
-            .to_owned()
-    };
-    let url = string(&["metrics_live_server_url", "gdobs_url", "GDOBS_URL"]);
-    if !url.is_empty() {
-        return Ok(url);
-    }
-    let mut host = string(&["metrics_live_server_host", "gdobs_host", "GDOBS_HOST"]);
-    let port = ["metrics_live_server_port", "gdobs_port", "GDOBS_PORT"]
-        .iter()
-        .find_map(|key| values.get(*key));
-    if host.is_empty() && port.is_none() {
-        return Err(
-            "env file does not define metrics_live_server_url or metrics_live_server_host/port"
-                .into(),
-        );
-    }
-    if host.is_empty() {
-        host = "127.0.0.1".into();
-    }
-    if host.starts_with("ws://") || host.starts_with("wss://") {
-        return Ok(host);
-    }
-    let port = match port {
-        Some(Value::String(v)) => v.trim().parse::<i64>()?,
-        Some(Value::Number(v)) => v.as_f64().ok_or("invalid port")? as i64,
-        None => 8765,
-        _ => return Err("invalid endpoint port".into()),
-    };
-    if !(1..=65535).contains(&port) {
-        return Err(format!("metrics live server port out of range: {port}").into());
-    }
-    Ok(format!("ws://{host}:{port}"))
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -320,15 +225,9 @@ mod tests {
         assert_eq!(config.snapshot_options()["include_raw_samples"], false);
         assert_eq!(config.snapshot_options()["include_traces"], true);
         assert_eq!(config.snapshot_options()["limit"], 3);
-        assert!(
-            Config::parse(&[
-                "--url".into(),
-                "ws://localhost:7".into(),
-                "--env".into(),
-                "missing-file".into()
-            ])
-            .is_ok()
-        );
+        for retired in ["--env", "--project"] {
+            assert!(Config::parse(&[retired.into(), "missing-file".into()]).is_err());
+        }
         for invalid in ["", "NaN", "-1s", "1", "999999999999h"] {
             assert!(duration(invalid).is_err(), "{invalid}");
         }
