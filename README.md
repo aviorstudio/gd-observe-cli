@@ -1,4 +1,4 @@
-<!-- Generated from private documentation source. Do not edit directly. Source SHA256: 01f05b014cbfe27a409b84ff0a4431a40c5aca1748fef403a69841bc83032d27 -->
+<!-- Generated from private documentation source. Do not edit directly. Source SHA256: 008a9808c321444e81fbc5af7f5787e4ce6fac9992c6615008eba7fe0f6b4d51 -->
 
 # gd-observe-cli
 
@@ -26,11 +26,9 @@ gd-observe-cli diff before.json after.json
 
 `gd-observe-cli` connects to a running game's gd-observe WebSocket server. It provides a Ratatui live dashboard, metrics snapshots, performance assertions, diagnostic captures and offline comparisons. The Godot addon is installed separately.
 
-Current-source endpoint files use `.env.toml` and `.env.example.toml` (dotenv `.env` remains supported). `--project` discovers these files at the project root or under `godot_client/`; legacy endpoint JSON requires explicit conversion. `--budget` reads TOML, while snapshots, captures, diffs and WebSocket messages retain JSON. Installed releases retain their released interface.
+Set `GDOBS_URL` in the process environment, or use `--url` / `--addr` for one command. Explicit flags take precedence; the default is `ws://127.0.0.1:8765`. Keep public endpoint defaults in Mise and inject approved Preview credentials through ghenv. Endpoint file discovery and the `--env` / `--project` flags have been removed from current source. Installed releases retain their released interface.
 
-Endpoint selection supports `--url`, `--addr`, `--env` and `--project`; the default is `ws://127.0.0.1:8765`. A configured remote server can use the process-only `GDOBS_AUTH_TOKEN` environment variable. WSS uses system trust roots. Use `gd-observe-cli --help` for command flags.
-
-Current-source migration is manual: create the named TOML source with the same effective settings and archive the legacy JSON v1 source outside the active configuration directory. No automatic import command is provided. Preserve explicit `false`, zero and empty arrays; omit null overrides only where they meant inheritance or defaults. Do not copy credentials into tracked source files. Existing installed settings are not migrated by a source update.
+Authentication uses only the process variable `GDOBS_AUTH_TOKEN`. WSS uses system trust roots. `--budget` reads TOML, while snapshots, captures, diffs and WebSocket messages retain JSON. Use `gd-observe-cli --help` for command flags.
 
 ## Development
 
